@@ -19,9 +19,10 @@
 define jenkins::user (
   Pattern[/^[^@]+@[^@]+$/] $email,
   String $password,
-  String $full_name                 = 'Managed by Puppet',
-  String $public_key                = '',
+  String $full_name = 'Managed by Puppet',
+  String $public_key = '',
   Enum['present', 'absent'] $ensure = 'present',
+  $bootstrapping = false,
 ){
 
   include ::jenkins::cli_helper
