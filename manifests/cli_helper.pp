@@ -44,7 +44,7 @@ class jenkins::cli_helper (
       '|',
       '/usr/bin/java',
       "-jar ${::jenkins::cli::jar}",
-      "-s http://127.0.0.1:${port}${prefix}",
+      "-s http://127.0.0.1:${port}${prefix} -http",
       $::jenkins::_cli_auth_arg,
       'groovy ='
     ]),
