@@ -4,8 +4,8 @@
 # CLI.
 #
 define jenkins::cli::exec(
-  Optional[String] $unless        = undef,
-  Variant[String, Array] $command = $title,
+  Variant[String, Sensitive[String], Undef]                   $unless  = undef,
+  Variant[String, Array, Sensitive[String], Sensitive[Array]] $command = $title,
 ) {
 
   include ::jenkins
@@ -16,16 +16,29 @@ define jenkins::cli::exec(
     -> Jenkins::Cli::Exec[$title]
       -> Anchor['jenkins::end']
 
+  # If we passed in a Sensitive command we need to unwrap it first
+  # Otherwise the join/delete/flatten sequence won't work correctly
+  $unwrapped_command = $command ? {
+    Sensitive => $command.unwrap(),
+    default   => $command,
+  }
+
   # $command may be either a string or an array due to the use of flatten()
-  $run = join(
+  $unwrapped_run = join(
     delete_undef_values(
       flatten([
         $::jenkins::cli_helper::helper_cmd,
-        $command,
+        $unwrapped_command,
       ])
     ),
     ' '
   )
+
+  # If we passed in a Sensitive command we want to make sure to wrap it again before use
+  $run = $command ? {
+    Sensitive => Sensitive($unwrapped_run),
+    default   => $unwrapped_run,
+  }
 
   if $unless {
     $environment_run = [ "HELPER_CMD=eval ${::jenkins::cli_helper::helper_cmd}" ]

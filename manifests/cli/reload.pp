@@ -9,8 +9,9 @@ class jenkins::cli::reload {
   }
 
   # Reload all Jenkins config from disk (only when notified)
+  # The command is marked Sensitive as jenkins::cli::cmd can contain a password
   exec { 'reload-jenkins':
-    command     => "${::jenkins::cli::cmd} reload-configuration",
+    command     => Sensitive("${::jenkins::cli::cmd} reload-configuration"),
     path        => ['/bin', '/usr/bin'],
     tries       => 10,
     try_sleep   => 2,

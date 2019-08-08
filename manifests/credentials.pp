@@ -34,16 +34,19 @@ define jenkins::credentials (
   case $ensure {
     'present': {
       jenkins::cli::exec { "create-jenkins-credentials-${title}":
-        command => [
+        command => Sensitive([
           'create_or_update_credentials',
           $title,
           "'${password}'",
           "'${uuid}'",
           "'${description}'",
           "'${private_key_or_path}'",
-        ],
-        unless  => "for i in \$(seq 1 ${::jenkins::cli_tries}); do \$HELPER_CMD credential_info ${title} && break || sleep ${::jenkins::cli_try_sleep}; done | grep ${title}", # lint:ignore:140chars
+        ]),
+        unless  => Sensitive("for i in \$(seq 1 ${::jenkins::cli_tries}); do \$HELPER_CMD credential_info ${title} && break || sleep ${::jenkins::cli_try_sleep}; done | grep ${title} > /dev/null"), # lint:ignore:140chars
       }
+      # The above unless redirects to /dev/null to avoid logging in debug (see PUP-9956).
+      # The grep is just checking to see if the line exists and the output here can be safely be thrown away.
+      # grep -q also does this but the man pages recommend > /dev/null as a portable method.
     }
     'absent': {
       # XXX not idempotent

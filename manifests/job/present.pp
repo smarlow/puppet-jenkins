@@ -85,18 +85,20 @@ define jenkins::job::present(
   }
 
   # Use Jenkins CLI to create the job
+  # The command is marked Sensitive as jenkins_cli can contain a password
   $cat_config = "cat \"${tmp_config_path}\""
   $create_job = "${jenkins_cli} create-job \"${jobname}\""
   exec { "jenkins create-job ${jobname}":
-    command => "${cat_config} | ${create_job}",
+    command => Sensitive("${cat_config} | ${create_job}"),
     creates => [$config_path, "${job_dir}/builds"],
     require => File[$tmp_config_path],
   }
 
   # Use Jenkins CLI to update the job if it already exists
+  # The command is marked Sensitive as jenkins_cli can contain a password
   $update_job = "${jenkins_cli} update-job ${jobname}"
   exec { "jenkins update-job ${jobname}":
-    command => "${cat_config} | ${update_job}",
+    command => Sensitive("${cat_config} | ${update_job}"),
     onlyif  => "test -e ${config_path}",
     unless  => "${difftool} ${config_path} ${tmp_config_path}",
     require => File[$tmp_config_path],

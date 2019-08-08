@@ -18,6 +18,7 @@ class jenkins::users {
     $_bootstrap_groovy_ensure = absent
   }
 
+  # The content parameter is marked Sensitive as the template can contain user passwords
   file { "${::jenkins::jenkins_home}/init.groovy.d/puppet.bootstapping.groovy":
     ensure    => $_bootstrap_groovy_ensure,
     owner     => $::jenkins::user,
@@ -25,7 +26,7 @@ class jenkins::users {
     mode      => '0640',
     tag       => 'jenkins_groovy_init_script',
     show_diff => false,
-    content   => template('jenkins/home/jenkins/init.groovy.d/puppet.bootstapping.groovy.erb'),
+    content   => Sensitive(template('jenkins/home/jenkins/init.groovy.d/puppet.bootstapping.groovy.erb')),
   }
 
   create_resources('jenkins::user', $::jenkins::user_hash)
