@@ -112,6 +112,20 @@ describe 'jenkins::cli::config', :type => :class do
         end # as root
       end # when ssh_private_key is also set
     end # ssh_private_key_content
+
+    context 'cli_username and cli_password' do
+      it_behaves_like 'validate_string', :cli_username
+      it_behaves_like 'validate_string', :cli_password
+
+      let(:params) do
+        {
+          :cli_username => 'abc',
+          :cli_password => '123',
+        }
+      end
+
+      it { should contain_file('/tmp/jenkins_credentials_for_puppet').with_content('abc:123') }
+    end
   end # parameters
 
   describe 'package gem provider' do

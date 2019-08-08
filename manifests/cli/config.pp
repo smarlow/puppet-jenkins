@@ -68,7 +68,7 @@ class jenkins::cli::config(
       ensure  => 'file',
       mode    => '0400',
       backup  => false,
-      content => "${cli_username}:${cli_password}",
+      content => Sensitive("${cli_username}:${cli_password}"),
     }
 
     # allow this class to be included when not running as root

@@ -94,6 +94,45 @@ describe 'jenkins::cli::exec', :type => :define do
         )
       end
     end
+
+    context 'Sensitive(bar)' do
+      let(:params) {{ :command => sensitive('bar') }}
+
+      it do
+        should contain_exec('foo').with(
+          :command   => "#{helper_cmd} bar",
+          :tries     => 10,
+          :try_sleep => 10,
+          :unless    => nil,
+        )
+      end
+    end
+
+    context "Sensitive(['bar'])" do
+      let(:params) {{ :command => sensitive(%w{ bar }) }}
+
+      it do
+        should contain_exec('foo').with(
+          :command   => "#{helper_cmd} bar",
+          :tries     => 10,
+          :try_sleep => 10,
+          :unless    => nil,
+        )
+      end
+    end
+
+    context "Sensitive(['bar', 'baz'])" do
+      let(:params) {{ :command => sensitive(%w{bar baz}) }}
+
+      it do
+        should contain_exec('foo').with(
+          :command   => "#{helper_cmd} bar baz",
+          :tries     => 10,
+          :try_sleep => 10,
+          :unless    => nil,
+        )
+      end
+    end
   end # command =>
 
   describe 'unless =>' do
@@ -110,5 +149,20 @@ describe 'jenkins::cli::exec', :type => :define do
         )
       end
     end
+
+    context 'Sensitive(bar)' do
+      let(:params) {{ :unless => sensitive('bar') }}
+
+      it do
+        should contain_exec('foo').with(
+          :command     => "#{helper_cmd} foo",
+          :environment => [ "HELPER_CMD=eval #{helper_cmd}" ],
+          :unless      => 'bar',
+          :tries       => 10,
+          :try_sleep   => 10,
+        )
+      end
+    end
   end # unless_cli_helper =>
+
 end

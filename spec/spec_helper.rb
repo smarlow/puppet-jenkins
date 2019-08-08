@@ -10,6 +10,8 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/fixtures/modules/
 
 require 'spec/helpers/rspechelpers'
 
+require 'spec_helper_local' if File.file?(File.join(File.dirname(__FILE__), 'spec_helper_local.rb'))
+
 RSpec.configure do |c|
   # Override puppetlabs_spec_helper's stupid setting of mock_with to :mocha,
   # which is a totally piece of garbage mocking library

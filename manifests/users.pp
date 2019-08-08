@@ -25,7 +25,7 @@ class jenkins::users {
     mode      => '0640',
     tag       => 'jenkins_groovy_init_script',
     show_diff => false,
-    content   => template('jenkins/home/jenkins/init.groovy.d/puppet.bootstapping.groovy.erb'),
+    content   => Sensitive(template('jenkins/home/jenkins/init.groovy.d/puppet.bootstapping.groovy.erb')),
   }
 
   create_resources('jenkins::user', $::jenkins::user_hash)
