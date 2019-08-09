@@ -67,7 +67,7 @@ class jenkins::cli {
 
   # Do a safe restart of Jenkins (only when notified)
   exec { 'safe-restart-jenkins':
-    command     => "${cmd} safe-restart && /bin/sleep 10",
+    command     => Sensitive("${cmd} safe-restart && /bin/sleep 10"),
     path        => ['/bin', '/usr/bin'],
     tries       => 10,
     try_sleep   => 2,
