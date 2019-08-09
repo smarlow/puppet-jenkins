@@ -42,7 +42,7 @@ define jenkins::credentials (
           "'${description}'",
           "'${private_key_or_path}'",
         ]),
-        unless  => Sensitive("for i in \$(seq 1 ${::jenkins::cli_tries}); do \$HELPER_CMD credential_info ${title} && break || sleep ${::jenkins::cli_try_sleep}; done | grep ${title}"), # lint:ignore:140chars
+        unless  => Sensitive("for i in \$(seq 1 ${::jenkins::cli_tries}); do \$HELPER_CMD credential_info ${title} && break || sleep ${::jenkins::cli_try_sleep}; done | grep ${title} > /dev/null"), # lint:ignore:140chars
       }
     }
     'absent': {

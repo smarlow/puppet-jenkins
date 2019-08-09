@@ -35,7 +35,7 @@ describe 'jenkins::credentials', :type => :define do
     it { should contain_jenkins__cli__exec('create-jenkins-credentials-foo').with({
       :command    => [ 'create_or_update_credentials' , "#{title}", "'mypass'",
                        "''", "'Managed by Puppet'", "''" ],
-      :unless     => "for i in \$(seq 1 10); do \$HELPER_CMD credential_info #{title} && break || sleep 10; done | grep #{title}",
+      :unless     => "for i in \$(seq 1 10); do \$HELPER_CMD credential_info #{title} && break || sleep 10; done | grep #{title} > /dev/null",
     })}
   end
 
@@ -58,7 +58,7 @@ describe 'jenkins::credentials', :type => :define do
     it { should contain_jenkins__cli__exec('create-jenkins-credentials-foo').with({
       :command    => [ 'create_or_update_credentials' , "#{title}", "'mypass'",
                        "'e94d3b98-5ba4-43b9-89ed-79a08ea97f6f'", "'Managed by Puppet'", "''" ],
-      :unless     => "for i in \$(seq 1 10); do \$HELPER_CMD credential_info #{title} && break || sleep 10; done | grep #{title}",
+      :unless     => "for i in \$(seq 1 10); do \$HELPER_CMD credential_info #{title} && break || sleep 10; done | grep #{title} > /dev/null",
     })}
   end
 
