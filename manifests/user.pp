@@ -35,14 +35,14 @@ define jenkins::user (
     'present': {
       # XXX not idempotent
       jenkins::cli::exec { "create-jenkins-user-${title}":
-        command => Sensitive([
+        command => [
           'create_or_update_user',
           $title,
           $email,
           "'${password}'",
           "'${full_name}'",
           "'${public_key}'",
-        ]),
+        ],
       }
     }
     'absent': {

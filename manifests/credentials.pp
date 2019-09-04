@@ -34,14 +34,14 @@ define jenkins::credentials (
   case $ensure {
     'present': {
       jenkins::cli::exec { "create-jenkins-credentials-${title}":
-        command => Sensitive([
+        command => [
           'create_or_update_credentials',
           $title,
           "'${password}'",
           "'${uuid}'",
           "'${description}'",
           "'${private_key_or_path}'",
-        ]),
+        ],
         unless  => Sensitive("for i in \$(seq 1 ${::jenkins::cli_tries}); do \$HELPER_CMD credential_info ${title} && break || sleep ${::jenkins::cli_try_sleep}; done | grep ${title} > /dev/null"), # lint:ignore:140chars
       }
       # The above unless redirects to /dev/null to avoid logging in debug (see PUP-9956).
